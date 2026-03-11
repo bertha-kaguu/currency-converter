@@ -1,4 +1,4 @@
-const API_KEY="YOUR_API_KEY"
+const API_KEY="5e281ff06b399c80c566015c"
 
 const amount=document.getElementById("amount")
 const fromCurrency=document.getElementById("fromCurrency")
