@@ -68,22 +68,23 @@ async function updateHeatmap(){
     
     const rates = data.conversion_rates;
     
-    const values = Object.values(rates);
+    // Convert object to array and sort descending
+    const sortedRates = Object.entries(rates).sort((a,b) => b[1]-a[1]);
+    
+    const values = sortedRates.map(item => item[1]);
     const min = Math.min(...values);
     const max = Math.max(...values);
     
     heatmapContainer.innerHTML="";
     
-    for(let cur in rates){
-        let val = rates[cur];
-        // Calculate color intensity
+    sortedRates.forEach(([cur, val])=>{
         let ratio = (val - min)/(max-min);
         let color = `rgba(${Math.floor(255*(1-ratio))},${Math.floor(255*ratio)},50,0.8)`;
-        let div=document.createElement("div");
-        div.style.background=color;
-        div.textContent=`${cur}: ${val}`;
+        let div = document.createElement("div");
+        div.style.background = color;
+        div.textContent = `${cur}: ${val}`;
         heatmapContainer.appendChild(div);
-    }
+    });
 }
 
 updateHeatmap();

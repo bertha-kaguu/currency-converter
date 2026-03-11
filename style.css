@@ -187,12 +187,21 @@
                 border-radius:10px;
                 display:flex;
                 flex-wrap:wrap;
-                gap:5px;
+                gap:10px;
+                justify-content:space-between;
                 }
                 
                 .heatmap div{
-                padding:5px 10px;
+                flex: 0 1 48%;
+                padding:8px 10px;
                 border-radius:6px;
                 color:white;
                 font-weight:600;
+                text-align: center;
+                box-sizing:border-box;
                 }
+                @media (max-width: 500px){
+                    .heatmap div{
+                      flex: 1 1 100%; /* full width on small screens */
+                    }
+                  }
