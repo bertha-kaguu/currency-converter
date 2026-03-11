@@ -16,6 +16,7 @@ const historyList=document.getElementById("historyList")
 const themeToggle=document.getElementById("themeToggle")
 const tickerContent = document.getElementById("tickerContent");
 const popularCurrencies = ["USD","EUR","GBP","KES","JPY","AUD","CAD"];
+const moversList = document.getElementById("moversList");
 
 async function updateTicker(){
     const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
@@ -31,6 +32,34 @@ async function updateTicker(){
 // Update every 10 seconds
 updateTicker();
 setInterval(updateTicker,10000);
+
+async function updateMovers(){
+    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
+    const data = await res.json();
+    
+    const rates = data.conversion_rates;
+    
+    // Compute percentage change from 1 unit (fake previous rate for demo)
+    let changes = [];
+    for(let cur in rates){
+        let prev = rates[cur] * (1 + (Math.random()-0.5)/10); // simulate change
+        let change = ((rates[cur]-prev)/prev*100).toFixed(2);
+        changes.push({cur, change});
+    }
+    
+    changes.sort((a,b)=>b.change-a.change);
+    
+    moversList.innerHTML="";
+    
+    changes.slice(0,5).forEach(item=>{
+        let li=document.createElement("li");
+        li.textContent=`${item.cur}: ${item.change}%`;
+        moversList.appendChild(li);
+    });
+}
+
+updateMovers();
+setInterval(updateMovers,15000);
 
 let chart
 

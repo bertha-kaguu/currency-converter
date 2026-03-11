@@ -165,3 +165,17 @@
         0% {transform:translateX(100%);}
         100% {transform:translateX(-100%);}
         }
+
+        .top-movers{
+            margin-top:20px;
+            background:rgba(255,255,255,0.1);
+            padding:10px;
+            border-radius:10px;
+            max-height:150px;
+            overflow:auto;
+            }
+            
+            .top-movers li{
+            padding:5px;
+            border-bottom:1px solid rgba(255,255,255,0.2);
+            }
