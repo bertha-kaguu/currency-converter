@@ -5,11 +5,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Currency Converter</title>
+<title>Advanced Currency Converter</title>
 
 <link rel="stylesheet" href="style.css">
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -17,29 +19,59 @@
 
 <div class="container">
 
+<header>
+
 <h1>Currency Converter</h1>
+
+<button id="themeToggle">🌙</button>
+
+</header>
 
 <div class="converter">
 
-<input
-type="number"
-id="amount"
-placeholder="Enter amount"
->
+<input type="number" id="amount" placeholder="Enter amount">
 
 <div class="currency-row">
 
+<div class="currency-box">
+
+<img id="fromFlag">
+
 <select id="fromCurrency"></select>
 
-<span class="swap" id="swapBtn">⇄</span>
+</div>
+
+<button id="swapBtn">⇄</button>
+
+<div class="currency-box">
+
+<img id="toFlag">
 
 <select id="toCurrency"></select>
 
 </div>
 
+</div>
+
+<input type="text" id="searchCurrency" placeholder="Search currency">
+
 <button id="convertBtn">Convert</button>
 
 <h2 id="result"></h2>
+
+</div>
+
+<div class="history">
+
+<h3>Conversion History</h3>
+
+<ul id="historyList"></ul>
+
+</div>
+
+<div class="chart-container">
+
+<canvas id="trendChart"></canvas>
 
 </div>
 
