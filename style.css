@@ -179,3 +179,20 @@
             padding:5px;
             border-bottom:1px solid rgba(255,255,255,0.2);
             }
+
+            .heatmap{
+                margin-top:20px;
+                padding:10px;
+                background:rgba(255,255,255,0.1);
+                border-radius:10px;
+                display:flex;
+                flex-wrap:wrap;
+                gap:5px;
+                }
+                
+                .heatmap div{
+                padding:5px 10px;
+                border-radius:6px;
+                color:white;
+                font-weight:600;
+                }

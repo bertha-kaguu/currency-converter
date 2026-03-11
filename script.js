@@ -17,6 +17,7 @@ const themeToggle=document.getElementById("themeToggle")
 const tickerContent = document.getElementById("tickerContent");
 const popularCurrencies = ["USD","EUR","GBP","KES","JPY","AUD","CAD"];
 const moversList = document.getElementById("moversList");
+const heatmapContainer = document.getElementById("heatmapContainer");
 
 async function updateTicker(){
     const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
@@ -60,6 +61,33 @@ async function updateMovers(){
 
 updateMovers();
 setInterval(updateMovers,15000);
+
+async function updateHeatmap(){
+    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
+    const data = await res.json();
+    
+    const rates = data.conversion_rates;
+    
+    const values = Object.values(rates);
+    const min = Math.min(...values);
+    const max = Math.max(...values);
+    
+    heatmapContainer.innerHTML="";
+    
+    for(let cur in rates){
+        let val = rates[cur];
+        // Calculate color intensity
+        let ratio = (val - min)/(max-min);
+        let color = `rgba(${Math.floor(255*(1-ratio))},${Math.floor(255*ratio)},50,0.8)`;
+        let div=document.createElement("div");
+        div.style.background=color;
+        div.textContent=`${cur}: ${val}`;
+        heatmapContainer.appendChild(div);
+    }
+}
+
+updateHeatmap();
+setInterval(updateHeatmap,20000);
 
 let chart
 
