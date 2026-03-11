@@ -14,6 +14,23 @@ const toFlag=document.getElementById("toFlag")
 const historyList=document.getElementById("historyList")
 
 const themeToggle=document.getElementById("themeToggle")
+const tickerContent = document.getElementById("tickerContent");
+const popularCurrencies = ["USD","EUR","GBP","KES","JPY","AUD","CAD"];
+
+async function updateTicker(){
+    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
+    const data = await res.json();
+    let html = "";
+    popularCurrencies.forEach(cur=>{
+        const rate = data.conversion_rates[cur].toFixed(2);
+        html += `<span>USD → ${cur}: ${rate} &nbsp;&nbsp;|&nbsp;&nbsp; </span>`;
+    });
+    tickerContent.innerHTML = html;
+}
+
+// Update every 10 seconds
+updateTicker();
+setInterval(updateTicker,10000);
 
 let chart
 
