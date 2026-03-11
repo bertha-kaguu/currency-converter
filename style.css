@@ -67,6 +67,7 @@
     align-items:center;
     justify-content:space-between;
     margin-bottom:15px;
+    gap: 10px;
     }
     
     .currency-box{
@@ -88,8 +89,18 @@
     #swapBtn{
     padding:8px;
     border:none;
-    border-radius:6px;
     cursor:pointer;
+    flex-shrink:0;   
+    background:linear-gradient(90deg,#00c6ff,#0072ff);
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:18px;
+    color:white;
+    font-size:18px;
     }
     
     button{
