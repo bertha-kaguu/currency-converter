@@ -5,7 +5,7 @@ const convertBtn = document.getElementById("convertBtn");
 const result = document.getElementById("result");
 const swapBtn = document.getElementById("swapBtn");
 
-const API_KEY = "YOUR_API_KEY";
+const API_KEY = "https://v6.exchangerate-api.com/v6/5e281ff06b399c80c566015c/latest/USD";
 
 const currencies = [
 "USD","EUR","GBP","KES","JPY","AUD","CAD","CHF","CNY","INR",
