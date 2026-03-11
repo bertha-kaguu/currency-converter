@@ -1,89 +1,194 @@
-const amount = document.getElementById("amount");
-const fromCurrency = document.getElementById("fromCurrency");
-const toCurrency = document.getElementById("toCurrency");
-const convertBtn = document.getElementById("convertBtn");
-const result = document.getElementById("result");
-const swapBtn = document.getElementById("swapBtn");
+const API_KEY="YOUR_API_KEY"
 
-const API_KEY = "5e281ff06b399c80c566015c";
+const amount=document.getElementById("amount")
+const fromCurrency=document.getElementById("fromCurrency")
+const toCurrency=document.getElementById("toCurrency")
+const result=document.getElementById("result")
+const convertBtn=document.getElementById("convertBtn")
+const swapBtn=document.getElementById("swapBtn")
+const search=document.getElementById("searchCurrency")
 
-const currencies = [
-"USD","EUR","GBP","KES","JPY","AUD","CAD","CHF","CNY","INR",
-"NZD","SGD","ZAR","HKD","KRW","SEK","NOK","DKK"
-];
+const fromFlag=document.getElementById("fromFlag")
+const toFlag=document.getElementById("toFlag")
 
-function populateCurrencies(){
+const historyList=document.getElementById("historyList")
 
-currencies.forEach(currency =>{
+const themeToggle=document.getElementById("themeToggle")
 
-let option1 = document.createElement("option");
-let option2 = document.createElement("option");
+let chart
 
-option1.value = currency;
-option1.textContent = currency;
+async function loadCurrencies(){
 
-option2.value = currency;
-option2.textContent = currency;
+const res=await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/codes`)
 
-fromCurrency.appendChild(option1);
-toCurrency.appendChild(option2);
+const data=await res.json()
 
-});
+const currencies=data.supported_codes
 
-fromCurrency.value = "USD";
-toCurrency.value = "KES";
+currencies.forEach(currency=>{
+
+const code=currency[0]
+
+let option1=document.createElement("option")
+let option2=document.createElement("option")
+
+option1.value=code
+option1.text=code
+
+option2.value=code
+option2.text=code
+
+fromCurrency.appendChild(option1)
+toCurrency.appendChild(option2)
+
+})
+
+fromCurrency.value="USD"
+toCurrency.value="KES"
+
+updateFlags()
 
 }
 
-populateCurrencies();
+loadCurrencies()
 
+function updateFlags(){
 
-convertBtn.addEventListener("click", convertCurrency);
+const from=fromCurrency.value.slice(0,2)
+const to=toCurrency.value.slice(0,2)
 
-amount.addEventListener("input", convertCurrency);
+fromFlag.src=`https://flagsapi.com/${from}/flat/32.png`
+toFlag.src=`https://flagsapi.com/${to}/flat/32.png`
 
+}
 
-swapBtn.addEventListener("click", ()=>{
+fromCurrency.addEventListener("change",updateFlags)
+toCurrency.addEventListener("change",updateFlags)
 
-let temp = fromCurrency.value;
-fromCurrency.value = toCurrency.value;
-toCurrency.value = temp;
+swapBtn.addEventListener("click",()=>{
 
-convertCurrency();
+let temp=fromCurrency.value
+fromCurrency.value=toCurrency.value
+toCurrency.value=temp
 
-});
+updateFlags()
 
+})
+
+convertBtn.addEventListener("click",convertCurrency)
+
+amount.addEventListener("input",convertCurrency)
 
 async function convertCurrency(){
 
-if(amount.value === ""){
+if(amount.value==="")return
 
-result.innerText = "Enter an amount";
-return;
+const url=`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${fromCurrency.value}`
 
-}
+const res=await fetch(url)
 
-let url = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${fromCurrency.value}`;
+const data=await res.json()
 
-try{
+const rate=data.conversion_rates[toCurrency.value]
 
-let response = await fetch(url);
+const converted=(amount.value*rate).toFixed(2)
 
-let data = await response.json();
+result.innerText=`${amount.value} ${fromCurrency.value} = ${converted} ${toCurrency.value}`
 
-let rate = data.conversion_rates[toCurrency.value];
+saveHistory(result.innerText)
 
-let convertedAmount = (amount.value * rate).toFixed(2);
-
-result.innerText =
-`${amount.value} ${fromCurrency.value} = ${convertedAmount} ${toCurrency.value}`;
+loadChart(rate)
 
 }
 
-catch(error){
+function saveHistory(text){
 
-result.innerText = "Failed to fetch exchange rate";
+let history=JSON.parse(localStorage.getItem("history"))||[]
+
+history.unshift(text)
+
+history=history.slice(0,5)
+
+localStorage.setItem("history",JSON.stringify(history))
+
+displayHistory()
 
 }
+
+function displayHistory(){
+
+let history=JSON.parse(localStorage.getItem("history"))||[]
+
+historyList.innerHTML=""
+
+history.forEach(item=>{
+
+let li=document.createElement("li")
+
+li.textContent=item
+
+historyList.appendChild(li)
+
+})
+
+}
+
+displayHistory()
+
+themeToggle.addEventListener("click",()=>{
+
+document.body.classList.toggle("dark")
+
+})
+
+search.addEventListener("input",()=>{
+
+let filter=search.value.toUpperCase()
+
+let options=fromCurrency.options
+
+for(let i=0;i<options.length;i++){
+
+let txt=options[i].text
+
+options[i].style.display=txt.includes(filter)?"":"none"
+
+}
+
+})
+
+function loadChart(rate){
+
+const ctx=document.getElementById("trendChart")
+
+const data=[rate*0.95,rate*0.98,rate*1.02,rate]
+
+const labels=["3 days ago","2 days ago","Yesterday","Today"]
+
+if(chart)chart.destroy()
+
+chart=new Chart(ctx,{
+
+type:"line",
+
+data:{
+
+labels:labels,
+
+datasets:[{
+
+label:"Exchange Rate Trend",
+
+data:data,
+
+fill:false,
+
+tension:0.3
+
+}]
+
+}
+
+})
 
 }
