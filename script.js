@@ -62,33 +62,42 @@ async function updateMovers(){
 updateMovers();
 setInterval(updateMovers,15000);
 
-async function updateHeatmap(){
+async function updateHeatmap() {
     const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
     const data = await res.json();
-    
+  
     const rates = data.conversion_rates;
-    
-    // Convert object to array and sort descending
+  
+    // Convert object to array and sort descending by rate
     const sortedRates = Object.entries(rates).sort((a,b) => b[1]-a[1]);
-    
+  
     const values = sortedRates.map(item => item[1]);
     const min = Math.min(...values);
     const max = Math.max(...values);
-    
-    heatmapContainer.innerHTML="";
-    
-    sortedRates.forEach(([cur, val])=>{
-        let ratio = (val - min)/(max-min);
-        let color = `rgba(${Math.floor(255*(1-ratio))},${Math.floor(255*ratio)},50,0.8)`;
-        let div = document.createElement("div");
-        div.style.background = color;
-        div.textContent = `${cur}: ${val}`;
-        heatmapContainer.appendChild(div);
+  
+    heatmapContainer.innerHTML = "";
+  
+    sortedRates.forEach(([cur, val]) => {
+      let ratio = (val - min) / (max - min);
+  
+      // Heatmap color: green = strong, red = weak
+      let r = Math.floor(255*(1-ratio));
+      let g = Math.floor(255*ratio);
+      let color = `rgba(${r},${g},50,0.8)`;
+  
+      let div = document.createElement("div");
+      div.style.background = color;
+      div.textContent = `${cur}: ${val}`;
+  
+      // Tooltip: show difference from min/max
+      div.setAttribute("data-info", `Value: ${val} | Min: ${min} Max: ${max}`);
+  
+      heatmapContainer.appendChild(div);
     });
-}
-
-updateHeatmap();
-setInterval(updateHeatmap,20000);
+  }
+  
+  updateHeatmap();
+  setInterval(updateHeatmap, 20000);
 
 let chart
 
