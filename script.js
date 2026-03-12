@@ -284,3 +284,4 @@ async function loadChart() {
     });
     
     }
+    pairSelect.addEventListener("change", loadChart);
