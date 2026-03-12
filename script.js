@@ -163,69 +163,59 @@ updateFlags()
 
 convertBtn.addEventListener("click",convertCurrency)
 
-amount.addEventListener("input",convertCurrency)
-
 async function convertCurrency(){
 
     try{
     
-    const amount = parseFloat(document.getElementById("amount").value);
+    const amountValue = parseFloat(amount.value)
     
-    const fromCurrency = fromSelect.value;
-    const toCurrency = toSelect.value;
+    const from = fromCurrency.value
+    const to = toCurrency.value
     
-    if(!amount || amount <= 0){
-    alert("Please enter a valid amount");
-    return;
+    if(!amountValue || amountValue <= 0){
+    alert("Please enter a valid amount")
+    return
     }
     
-    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${fromCurrency}`);
+    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${from}`)
     
-    const data = await res.json();
+    const data = await res.json()
     
     if(!data.conversion_rates){
-    throw new Error("Exchange rates not found");
+    throw new Error("Exchange rates not found")
     }
     
-    const rate = data.conversion_rates[toCurrency];
+    const rate = data.conversion_rates[to]
     
     if(!rate){
-    throw new Error("Currency rate unavailable");
+    throw new Error("Currency rate unavailable")
     }
     
-    const convertedAmount = (amount * rate).toFixed(2);
+    const convertedAmount = (amountValue * rate).toFixed(2)
     
-    result.innerText = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
+    result.innerText = `${amountValue} ${from} = ${convertedAmount} ${to}`
     
+    // Save to history ONLY after clicking convert
+    addToHistory(`${amountValue} ${from} → ${convertedAmount} ${to}`)
     
-    /* Add to history ONLY after successful conversion */
-    
-    addToHistory(`${amount} ${fromCurrency} → ${convertedAmount} ${toCurrency}`);
-    
-    loadChart();
+    loadChart()
     
     }catch(error){
     
-    console.error(error);
-    alert("Failed to fetch exchange rate. Try again.");
+    console.error(error)
+    alert("Failed to fetch exchange rate. Try again.")
     
     }
     
     }
 
-    function addToHistory(text){
+  clearHistoryBtn.addEventListener("click", () => {
 
-        const li = document.createElement("li");
-        
-        li.textContent = text;
-        
-        historyList.prepend(li);
-        
-        if(historyList.children.length > 10){
-        historyList.removeChild(historyList.lastChild);
-        }
-        
-        }
+historyList.innerHTML = ""
+
+localStorage.removeItem("history")
+
+})
 
 function saveHistory(text){
 
@@ -240,6 +230,19 @@ localStorage.setItem("history",JSON.stringify(history))
 displayHistory()
 
 }
+function addToHistory(text){
+
+    let history = JSON.parse(localStorage.getItem("history")) || []
+    
+    history.unshift(text)
+    
+    history = history.slice(0,10)
+    
+    localStorage.setItem("history",JSON.stringify(history))
+    
+    displayHistory()
+    
+    }
 
 function displayHistory(){
 
@@ -260,13 +263,13 @@ historyList.appendChild(li)
 }
 
 displayHistory()
-
 clearHistoryBtn.addEventListener("click", () => {
 
-    historyList.innerHTML = "";
+    historyList.innerHTML = ""
     
-    });
-
+    localStorage.removeItem("history")
+    
+    })
 themeToggle.addEventListener("click",()=>{
 
 document.body.classList.toggle("dark")
@@ -310,7 +313,7 @@ async function loadChart() {
     
     const labels = ["3 days ago","2 days ago","Yesterday","Today"];
     
-    const ctx = document.getElementById("trendChart");
+    const ctx = document.getElementById("trendChart").getContext("2d");
     
     if(chart) chart.destroy();
     
