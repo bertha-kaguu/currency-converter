@@ -139,6 +139,22 @@
     padding:5px;
     border-bottom:1px solid rgba(255,255,255,0.2);
     }
+
+    .pair-selector{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top:20px;
+      margin-bottom:10px;
+      }
+      
+      .pair-selector select{
+      padding:6px;
+      border-radius:6px;
+      border:none;
+      font-weight:600;
+      cursor:pointer;
+      }
     
     .chart-container{
     margin-top:20px;
