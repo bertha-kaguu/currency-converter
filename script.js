@@ -182,7 +182,7 @@ result.innerText=`${amount.value} ${fromCurrency.value} = ${converted} ${toCurre
 
 saveHistory(result.innerText)
 
-loadChart(rate)
+loadChart()
 
 }
 
