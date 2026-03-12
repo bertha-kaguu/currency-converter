@@ -19,6 +19,7 @@ const popularCurrencies = ["USD","EUR","GBP","KES","JPY","AUD","CAD"];
 const moversList = document.getElementById("moversList");
 const heatmapContainer = document.getElementById("heatmapContainer");
 const pairSelect = document.getElementById("pairSelect");
+const clearHistoryBtn = document.getElementById("clearHistory");
 
 async function updateTicker(){
     const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
@@ -219,6 +220,12 @@ historyList.appendChild(li)
 }
 
 displayHistory()
+
+clearHistoryBtn.addEventListener("click", () => {
+
+    historyList.innerHTML = "";
+    
+    });
 
 themeToggle.addEventListener("click",()=>{
 
