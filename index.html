@@ -1,126 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Advanced Currency Converter</title>
-
 <link rel="stylesheet" href="style.css">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 
 <body>
 
-    <button id="themeToggle">🌙</button>
+<button id="themeToggle">🌙</button>
 
 <div class="container">
 
 <header>
-
 <h1>Currency Converter</h1>
-
 </header>
 
 <div class="converter">
-
 <input type="number" id="amount" placeholder="Enter amount">
 
 <div class="currency-row">
 
 <div class="currency-box">
-
 <img id="fromFlag">
-
-<select id="fromCurrency"></select>
-
+<input type="text" id="fromCurrencySearch" placeholder="Search currency">
+<div id="fromCurrencyList" class="currency-list"></div>
 </div>
 
 <button id="swapBtn">⇄</button>
 
 <div class="currency-box">
-
 <img id="toFlag">
-
-<select id="toCurrency"></select>
-
+<input type="text" id="toCurrencySearch" placeholder="Search currency">
+<div id="toCurrencyList" class="currency-list"></div>
 </div>
 
 </div>
-
-<input type="text" id="searchCurrency" placeholder="Search currency">
 
 <button id="convertBtn">Convert</button>
 
 <h2 id="result"></h2>
-
 </div>
 
 <div class="history">
-
 <h3>Conversion History</h3>
 <button id="clearHistory">Clear History</button>
-
 <ul id="historyList"></ul>
-
 </div>
 
 <div class="pair-selector">
-
-    <label for="pairSelect">Currency Pair:</label>
-    
-    <select id="pairSelect">
-    <option value="USD_KES">USD/KES</option>
-    <option value="USD_EUR">USD/EUR</option>
-    <option value="USD_GBP">USD/GBP</option>
-    <option value="USD_JPY">USD/JPY</option>
-    <option value="USD_AUD">USD/AUD</option>
-    <option value="USD_CAD">USD/CAD</option>
-    <option value="USD_CHF">USD/CHF</option>
-    </select>
-    
-    </div>
+<label for="pairSelect">Currency Pair:</label>
+<select id="pairSelect">
+<option value="USD_KES">USD/KES</option>
+<option value="USD_EUR">USD/EUR</option>
+<option value="USD_GBP">USD/GBP</option>
+<option value="USD_JPY">USD/JPY</option>
+<option value="USD_AUD">USD/AUD</option>
+<option value="USD_CAD">USD/CAD</option>
+<option value="USD_CHF">USD/CHF</option>
+</select>
+</div>
 
 <div class="chart-container">
-
 <canvas id="trendChart"></canvas>
-
 </div>
 
 <div class="live-ticker">
-    <h3>Live Forex Rates</h3>
-    <div id="tickerContent"></div>
+<h3>Live Forex Rates</h3>
+<div id="tickerContent"></div>
 </div>
 
 <div class="top-movers">
-    <h3>Top Movers (vs USD)</h3>
-    <ul id="moversList"></ul>
+<h3>Top Movers (vs USD)</h3>
+<ul id="moversList"></ul>
 </div>
 
 <div class="heatmap-section">
-
-    <div class="heatmap-header">
-        <h3>Currency Heatmap</h3>
-
-        <div class="heatmap-legend">
-            <span class="weak">Weak</span>
-            <div class="legend-bar"></div>
-            <span class="strong">Strong</span>
-        </div>
-    </div>
-
-    <div id="heatmapContainer"></div>
-
+<div class="heatmap-header">
+<h3>Currency Heatmap</h3>
+<div class="heatmap-legend">
+<span class="weak">Weak</span>
+<div class="legend-bar"></div>
+<span class="strong">Strong</span>
+</div>
+</div>
+<div id="heatmapContainer"></div>
 </div>
 
 </div>
 
 <script src="script.js"></script>
-
 </body>
 </html>
