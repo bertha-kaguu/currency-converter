@@ -161,6 +161,22 @@ updateFlags()
 
 })
 
+search.addEventListener("input",()=>{
+
+    const filter = search.value.toUpperCase()
+    
+    for(let option of fromCurrency.options){
+    
+    if(option.value.includes(filter)){
+    fromCurrency.value = option.value
+    updateFlags()
+    break
+    }
+    
+    }
+    
+    })
+
 convertBtn.addEventListener("click",convertCurrency)
 
 async function convertCurrency(){
