@@ -167,37 +167,65 @@ amount.addEventListener("input",convertCurrency)
 
 async function convertCurrency(){
 
-if(amount.value==="")return
-
-const url=`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${fromCurrency.value}`
-
-const res=await fetch(url)
-
-const data=await res.json()
-
-const rate=data.conversion_rates[toCurrency.value]
-
-const converted=(amount.value*rate).toFixed(2)
-
-result.innerText=`${amount.value} ${fromCurrency.value} = ${converted} ${toCurrency.value}`
-
-function addToHistory(text){
-    const li = document.createElement("li");
-    li.textContent = text;
-    historyList.prepend(li);
-    if(historyList.children.length > 10){
-        historyList.removeChild(historyList.lastChild);
-        }
+    try{
+    
+    const amount = parseFloat(document.getElementById("amount").value);
+    
+    const fromCurrency = fromSelect.value;
+    const toCurrency = toSelect.value;
+    
+    if(!amount || amount <= 0){
+    alert("Please enter a valid amount");
+    return;
+    }
+    
+    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${fromCurrency}`);
+    
+    const data = await res.json();
+    
+    if(!data.conversion_rates){
+    throw new Error("Exchange rates not found");
+    }
+    
+    const rate = data.conversion_rates[toCurrency];
+    
+    if(!rate){
+    throw new Error("Currency rate unavailable");
+    }
+    
+    const convertedAmount = (amount * rate).toFixed(2);
+    
+    result.innerText = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
+    
+    
+    /* Add to history ONLY after successful conversion */
+    
+    addToHistory(`${amount} ${fromCurrency} → ${convertedAmount} ${toCurrency}`);
+    
+    loadChart();
+    
+    }catch(error){
+    
+    console.error(error);
+    alert("Failed to fetch exchange rate. Try again.");
+    
+    }
+    
     }
 
-    const record = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
+    function addToHistory(text){
 
-addToHistory(record);
-saveHistory(result.innerText)
-
-loadChart()
-
-}
+        const li = document.createElement("li");
+        
+        li.textContent = text;
+        
+        historyList.prepend(li);
+        
+        if(historyList.children.length > 10){
+        historyList.removeChild(historyList.lastChild);
+        }
+        
+        }
 
 function saveHistory(text){
 
