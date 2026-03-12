@@ -240,3 +240,27 @@
                   grid-template-columns: repeat(3, 1fr);
                 }
               }
+              .heatmap-legend{
+                display:flex;
+                align-items:center;
+                gap:10px;
+                margin-bottom:10px;
+                font-size:12px;
+                }
+                
+                .legend-bar{
+                flex:1;
+                height:10px;
+                border-radius:5px;
+                background:linear-gradient(to right, red, yellow, green);
+                }
+                
+                .weak{
+                color:#ff6b6b;
+                font-weight:600;
+                }
+                
+                .strong{
+                color:#4cd137;
+                font-weight:600;
+                }
