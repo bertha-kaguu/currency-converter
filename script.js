@@ -18,6 +18,7 @@ const tickerContent = document.getElementById("tickerContent");
 const popularCurrencies = ["USD","EUR","GBP","KES","JPY","AUD","CAD"];
 const moversList = document.getElementById("moversList");
 const heatmapContainer = document.getElementById("heatmapContainer");
+const pairSelect = document.getElementById("pairSelect");
 
 async function updateTicker(){
     const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
@@ -241,38 +242,45 @@ options[i].style.display=txt.includes(filter)?"":"none"
 
 })
 
-function loadChart(rate){
+async function loadChart() {
 
-const ctx=document.getElementById("trendChart")
-
-const data=[rate*0.95,rate*0.98,rate*1.02,rate]
-
-const labels=["3 days ago","2 days ago","Yesterday","Today"]
-
-if(chart)chart.destroy()
-
-chart=new Chart(ctx,{
-
-type:"line",
-
-data:{
-
-labels:labels,
-
-datasets:[{
-
-label:"Exchange Rate Trend",
-
-data:data,
-
-fill:false,
-
-tension:0.3
-
-}]
-
-}
-
-})
-
-}
+    const pair = pairSelect.value.split("_");
+    
+    const base = pair[0];
+    const target = pair[1];
+    
+    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`);
+    const data = await res.json();
+    
+    const rate = data.conversion_rates[target];
+    
+    const history = [
+    rate * 0.95,
+    rate * 0.97,
+    rate * 0.99,
+    rate
+    ];
+    
+    const labels = ["3 days ago","2 days ago","Yesterday","Today"];
+    
+    const ctx = document.getElementById("trendChart");
+    
+    if(chart) chart.destroy();
+    
+    chart = new Chart(ctx,{
+    
+    type:"line",
+    
+    data:{
+    labels:labels,
+    datasets:[{
+    label:`${base}/${target}`,
+    data:history,
+    borderWidth:2,
+    tension:0.3
+    }]
+    }
+    
+    });
+    
+    }
