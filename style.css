@@ -84,8 +84,9 @@ h1{
 
 select, .currency-box input{
   padding:8px;
-  border-radius:6px;
+  border-radius:8px;
   border:none;
+  margin-top: 23px;
 }
 
 #swapBtn{
