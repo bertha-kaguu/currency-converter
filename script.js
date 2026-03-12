@@ -181,6 +181,18 @@ const converted=(amount.value*rate).toFixed(2)
 
 result.innerText=`${amount.value} ${fromCurrency.value} = ${converted} ${toCurrency.value}`
 
+function addToHistory(text){
+    const li = document.createElement("li");
+    li.textContent = text;
+    historyList.prepend(li);
+    if(historyList.children.length > 10){
+        historyList.removeChild(historyList.lastChild);
+        }
+    }
+
+    const record = `${amount} ${fromCurrency} = ${convertedAmount} ${toCurrency}`;
+
+addToHistory(record);
 saveHistory(result.innerText)
 
 loadChart()
