@@ -180,17 +180,7 @@
             border-bottom:1px solid rgba(255,255,255,0.2);
             }
 
-            .heatmap {
-                margin-top: 20px;
-                padding: 10px;
-                background: rgba(255,255,255,0.1);
-                border-radius: 10px;
-              
-                display: grid;
-                grid-template-columns: repeat(2, 1fr); /* 2 items per row */
-                gap: 10px;
-              }
-
+            
               #heatmapContainer{
                 display:grid;
                 grid-template-columns:repeat(2,1fr);
@@ -211,55 +201,7 @@
                   transform:scale(1.05);
                   }
               
-              .heatmap div {
-                padding: 10px;
-                border-radius: 6px;
-                color: white;
-                font-weight: 600;
-                text-align: center;
-                position: relative; /* needed for tooltip */
-                cursor: pointer;
-                transition: transform 0.2s;
-              }
-              
-              .heatmap div:hover {
-                transform: scale(1.05);
-              }
-              
-              
-              .heatmap div::after {
-                content: attr(data-info); /* shows the extra info */
-                position: absolute;
-                bottom: 110%;
-                left: 50%;
-                transform: translateX(-50%);
-                background: rgba(0,0,0,0.8);
-                color: white;
-                padding: 4px 8px;
-                border-radius: 4px;
-                font-size: 12px;
-                opacity: 0;
-                pointer-events: none;
-                transition: opacity 0.2s;
-                white-space: nowrap;
-              }
-              
-              .heatmap div:hover::after {
-                opacity: 1;
-              }
-              
-              /* 1 item per row on small screens */
-              @media (max-width: 500px) {
-                .heatmap {
-                  grid-template-columns: 1fr;
-                }
-              }
-              /* 3 items on big screens */
-              @media (min-width: 700px) {
-                .heatmap {
-                  grid-template-columns: repeat(3, 1fr);
-                }
-              }
+             
               .heatmap-legend{
                 display:flex;
                 align-items:center;
