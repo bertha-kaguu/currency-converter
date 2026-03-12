@@ -190,6 +190,26 @@
                 grid-template-columns: repeat(2, 1fr); /* 2 items per row */
                 gap: 10px;
               }
+
+              #heatmapContainer{
+                display:grid;
+                grid-template-columns:repeat(2,1fr);
+                gap:10px;
+                }
+
+                #heatmapContainer div{
+                  padding:10px;
+                  border-radius:6px;
+                  color:white;
+                  font-weight:600;
+                  text-align:center;
+                  cursor:pointer;
+                  transition:transform 0.2s;
+                  }
+                  
+                  #heatmapContainer div:hover{
+                  transform:scale(1.05);
+                  }
               
               .heatmap div {
                 padding: 10px;
