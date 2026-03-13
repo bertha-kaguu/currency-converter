@@ -108,13 +108,20 @@ document.addEventListener("click", (e) => {
 
 // ======================= Swap Button ===========================
 swapBtn.addEventListener("click", () => {
+
     let temp = fromCurrency.value;
     fromCurrency.value = toCurrency.value;
     toCurrency.value = temp;
 
     fromCurrencySearch.value = fromCurrency.value;
     toCurrencySearch.value = toCurrency.value;
+
+    // update pair dropdown
+    pairSelect.value = `${fromCurrency.value}_${toCurrency.value}`;
+
     updateFlags();
+    loadChart();
+
 });
 
 // ======================= Conversion ===========================
