@@ -234,6 +234,11 @@ button:hover{
   gap:10px;
 }
 
+#heatmapContainer img{
+  width:20px;
+  margin-bottom:4px;
+}
+
 #heatmapContainer div{
   padding:10px;
   border-radius:6px;
