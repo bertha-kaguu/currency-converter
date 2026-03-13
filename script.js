@@ -141,7 +141,11 @@ async function convertCurrency() {
         document.getElementById("result").innerText = `${amountValue} ${from} = ${convertedAmount} ${to}`;
 
         addToHistory(`${amountValue} ${from} → ${convertedAmount} ${to}`);
-        loadChart();
+
+// update pair selector automatically
+pairSelect.value = `${from}_${to}`;
+
+loadChart();
     } catch (e) {
         console.error(e);
         alert("Failed to fetch exchange rate. Try again.");
