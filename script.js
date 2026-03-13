@@ -249,22 +249,22 @@ async function updateHeatmap() {
         let div = document.createElement("div");
         div.style.background = color;
         div.innerHTML = `
-<img src="https://flagsapi.com/${cur.slice(0,2)}/flat/24.png">
-<br>
-${cur}: ${val}
-`;
+        <img src="https://flagsapi.com/${cur.slice(0,2)}/flat/24.png">
+        <br>
+        ${cur}: ${val}
+        `;
 
 // when clicked, use it as the "TO" currency
-div.addEventListener("click", () => {
+        div.addEventListener("click", () => {
 
-    toCurrency.value = cur
-    toCurrencySearch.value = cur
+        toCurrency.value = cur
+        toCurrencySearch.value = cur
 
     // update pair dropdown
-    pairSelect.value = `${fromCurrency.value}_${cur}`
+        pairSelect.value = `${fromCurrency.value}_${cur}`
 
-    updateFlags()
-    loadChart()
+        updateFlags()
+        loadChart()
 
 })
 
