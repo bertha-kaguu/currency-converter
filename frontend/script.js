@@ -49,6 +49,9 @@ async function loadCurrencies() {
 
     updateFlags();
     loadChart();
+    updateTicker();
+updateMovers();
+updateHeatmap();
 }
 loadCurrencies();
 
@@ -60,20 +63,30 @@ function populateCurrencyList(currencies) {
         const div1 = document.createElement("div");
         div1.textContent = cur;
         div1.addEventListener("click", () => {
-            fromCurrencySearch.value = cur;
             fromCurrency.value = cur;
+            fromCurrencySearch.value = cur;
+        
+            pairSelect.value = `${cur}_${toCurrency.value}`;
+        
             fromCurrencyList.style.display = "none";
+        
             updateFlags();
+            loadChart();
         });
         fromCurrencyList.appendChild(div1);
 
         const div2 = document.createElement("div");
         div2.textContent = cur;
         div2.addEventListener("click", () => {
-            toCurrencySearch.value = cur;
             toCurrency.value = cur;
+            toCurrencySearch.value = cur;
+        
+            pairSelect.value = `${fromCurrency.value}_${cur}`;
+        
             toCurrencyList.style.display = "none";
+        
             updateFlags();
+            loadChart();
         });
         toCurrencyList.appendChild(div2);
     });
@@ -117,14 +130,29 @@ swapBtn.addEventListener("click", () => {
     fromCurrencySearch.value = fromCurrency.value;
     toCurrencySearch.value = toCurrency.value;
 
-    // update pair dropdown
     pairSelect.value = `${fromCurrency.value}_${toCurrency.value}`;
 
     updateFlags();
+
+    // refresh everything
     loadChart();
     updateTicker();
     updateMovers();
     updateHeatmap();
+});
+
+fromCurrencySearch.addEventListener("blur", () => {
+    if (!fromCurrency.value) {
+        fromCurrency.value = "USD";
+        fromCurrencySearch.value = "USD";
+    }
+});
+
+toCurrencySearch.addEventListener("blur", () => {
+    if (!toCurrency.value) {
+        toCurrency.value = "KES";
+        toCurrencySearch.value = "KES";
+    }
 });
 
 // ======================= Conversion ===========================
@@ -279,32 +307,44 @@ setInterval(updateHeatmap, 20000);
 
 // ======================= Chart ===========================
 async function loadChart() {
+    if (!pairSelect.value) return; // ✅ prevent crash
+
     const pair = pairSelect.value.split("_");
+
+    if (pair.length < 2) return; // ✅ safety
+
     const base = pair[0];
     const target = pair[1];
 
-    const res = await fetch(`http://localhost:3000/api/rates/${base}`);
-    const data = await res.json();
+    try {
+        const res = await fetch(`http://localhost:3000/api/rates/${base}`);
+        const data = await res.json();
 
-    const rate = data.conversion_rates[target];
+        if (!data.conversion_rates || !data.conversion_rates[target]) return;
 
-    const history = [rate * 0.95, rate * 0.97, rate * 0.99, rate];
+        const rate = data.conversion_rates[target];
 
-    const ctx = document.getElementById("trendChart").getContext("2d");
-    if (chart) chart.destroy();
+        const history = [rate * 0.95, rate * 0.97, rate * 0.99, rate];
 
-    chart = new Chart(ctx, {
-        type: "line",
-        data: {
-            labels: ["3 days ago", "2 days ago", "Yesterday", "Today"],
-            datasets: [{
-                label: `${base}/${target}`,
-                data: history,
-                borderWidth: 2,
-                tension: 0.3
-            }]
-        }
-    });
+        const ctx = document.getElementById("trendChart").getContext("2d");
+
+        if (chart) chart.destroy();
+
+        chart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: ["3 days ago", "2 days ago", "Yesterday", "Today"],
+                datasets: [{
+                    label: `${base}/${target}`,
+                    data: history,
+                    borderWidth: 2,
+                    tension: 0.3
+                }]
+            }
+        });
+
+    } catch (err) {
+        console.error("Chart error:", err);
+    }
 }
 pairSelect.addEventListener("change", loadChart);
-loadChart();
