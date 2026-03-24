@@ -24,34 +24,45 @@ let chart;
 
 // ======================= Load Currencies ===========================
 async function loadCurrencies() {
-    const res = await fetch(`http://localhost:3000/api/rates/USD`);
-    const data = await res.json();
+    try {
+        const res = await fetch(`http://localhost:3000/api/rates/USD`);
+        const data = await res.json();
 
-    const currencies = Object.keys(data.conversion_rates);
+        if (!data.conversion_rates) {
+            console.error("API failed:", data);
+            alert("Backend/API not working. Check server.");
+            return;
+        }
 
-    currencies.forEach(code => {
-        const opt1 = document.createElement("option");
-        opt1.value = code;
-        fromCurrency.appendChild(opt1);
+        const currencies = Object.keys(data.conversion_rates);
 
-        const opt2 = document.createElement("option");
-        opt2.value = code;
-        toCurrency.appendChild(opt2);
-    });
+        currencies.forEach(code => {
+            const opt1 = document.createElement("option");
+            opt1.value = code;
+            fromCurrency.appendChild(opt1);
 
-    populateCurrencyList(currencies);
+            const opt2 = document.createElement("option");
+            opt2.value = code;
+            toCurrency.appendChild(opt2);
+        });
 
-    fromCurrency.value = "USD";
-    toCurrency.value = "KES";
+        populateCurrencyList(currencies);
 
-    fromCurrencySearch.value = "USD";
-    toCurrencySearch.value = "KES";
+        fromCurrency.value = "USD";
+        toCurrency.value = "KES";
 
-    updateFlags();
-    loadChart();
-    updateTicker();
-updateMovers();
-updateHeatmap();
+        fromCurrencySearch.value = "USD";
+        toCurrencySearch.value = "KES";
+
+        updateFlags();
+        loadChart();
+        updateTicker();
+        updateMovers();
+        updateHeatmap();
+
+    } catch (err) {
+        console.error("Load currencies error:", err);
+    }
 }
 loadCurrencies();
 
@@ -98,21 +109,20 @@ function updateFlags() {
     toFlag.src = `https://flagsapi.com/${toCurrency.value.slice(0, 2)}/flat/32.png`;
 }
 
-// ======================= Searchable Dropdown ===========================
-fromCurrencySearch.addEventListener("input", () => {
-    const filter = fromCurrencySearch.value.toUpperCase();
-    fromCurrencyList.style.display = "block";
-    Array.from(fromCurrencyList.children).forEach(div => {
-        div.style.display = div.textContent.includes(filter) ? "" : "none";
-    });
+fromCurrencySearch.addEventListener("change", () => {
+    fromCurrency.value = fromCurrencySearch.value.toUpperCase();
+    updateFlags();
 });
 
-toCurrencySearch.addEventListener("input", () => {
-    const filter = toCurrencySearch.value.toUpperCase();
-    toCurrencyList.style.display = "block";
-    Array.from(toCurrencyList.children).forEach(div => {
-        div.style.display = div.textContent.includes(filter) ? "" : "none";
-    });
+toCurrencySearch.addEventListener("change", () => {
+    toCurrency.value = toCurrencySearch.value.toUpperCase();
+    updateFlags();
+});
+
+fromCurrencySearch.addEventListener("blur", () => {
+    if (!Array.from(fromCurrency.options).some(opt => opt.value === fromCurrencySearch.value)) {
+        fromCurrencySearch.value = fromCurrency.value;
+    }
 });
 
 document.addEventListener("click", (e) => {
