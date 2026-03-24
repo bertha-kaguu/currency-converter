@@ -1,5 +1,3 @@
-const API_KEY = "5e281ff06b399c80c566015c";
-
 const amount = document.getElementById("amount");
 const fromFlag = document.getElementById("fromFlag");
 const toFlag = document.getElementById("toFlag");
@@ -26,9 +24,10 @@ let chart;
 
 // ======================= Load Currencies ===========================
 async function loadCurrencies() {
-    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/codes`);
+    const res = await fetch(`http://localhost:3000/api/rates/USD`);
     const data = await res.json();
-    const currencies = data.supported_codes.map(c => c[0]);
+
+    const currencies = Object.keys(data.conversion_rates);
 
     currencies.forEach(code => {
         const opt1 = document.createElement("option");
@@ -42,12 +41,14 @@ async function loadCurrencies() {
 
     populateCurrencyList(currencies);
 
-    // Set default currencies
     fromCurrency.value = "USD";
     toCurrency.value = "KES";
+
     fromCurrencySearch.value = "USD";
     toCurrencySearch.value = "KES";
+
     updateFlags();
+    loadChart();
 }
 loadCurrencies();
 
@@ -121,7 +122,9 @@ swapBtn.addEventListener("click", () => {
 
     updateFlags();
     loadChart();
-
+    updateTicker();
+    updateMovers();
+    updateHeatmap();
 });
 
 // ======================= Conversion ===========================
@@ -137,7 +140,7 @@ async function convertCurrency() {
             return;
         }
 
-        const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${from}`);
+        const res = await fetch(`http://localhost:3000/api/rates/${from}`);
         const data = await res.json();
         if (!data.conversion_rates) throw new Error("Exchange rates not found");
 
@@ -193,7 +196,7 @@ themeToggle.addEventListener("click", () => {
 const popularCurrencies = ["USD", "EUR", "GBP", "KES", "JPY", "AUD", "CAD"];
 
 async function updateTicker() {
-    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
+    const res = await fetch(`http://localhost:3000/api/rates/${fromCurrency.value}`);
     const data = await res.json();
     let html = "";
     popularCurrencies.forEach(cur => {
@@ -207,7 +210,7 @@ setInterval(updateTicker, 10000);
 
 // ======================= Top Movers ===========================
 async function updateMovers() {
-    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
+    const res = await fetch(`http://localhost:3000/api/rates/${fromCurrency.value}`);
     const data = await res.json();
     const rates = data.conversion_rates;
 
@@ -231,7 +234,7 @@ setInterval(updateMovers, 15000);
 
 // ======================= Heatmap ===========================
 async function updateHeatmap() {
-    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/USD`);
+    const res = await fetch(`http://localhost:3000/api/rates/${fromCurrency.value}`);
     const data = await res.json();
     const rates = data.conversion_rates;
     const sortedRates = Object.entries(rates).sort((a, b) => b[1] - a[1]);
@@ -280,12 +283,12 @@ async function loadChart() {
     const base = pair[0];
     const target = pair[1];
 
-    const res = await fetch(`https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`);
+    const res = await fetch(`http://localhost:3000/api/rates/${base}`);
     const data = await res.json();
+
     const rate = data.conversion_rates[target];
 
     const history = [rate * 0.95, rate * 0.97, rate * 0.99, rate];
-    const labels = ["3 days ago", "2 days ago", "Yesterday", "Today"];
 
     const ctx = document.getElementById("trendChart").getContext("2d");
     if (chart) chart.destroy();
@@ -293,7 +296,7 @@ async function loadChart() {
     chart = new Chart(ctx, {
         type: "line",
         data: {
-            labels: labels,
+            labels: ["3 days ago", "2 days ago", "Yesterday", "Today"],
             datasets: [{
                 label: `${base}/${target}`,
                 data: history,
