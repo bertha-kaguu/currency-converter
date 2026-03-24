@@ -1,9 +1,7 @@
 // backend/server.js
 require('dotenv').config({ path: './.env' });
 const express = require('express');
-const fetch = require('node-fetch');
 const cors = require('cors');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 const API_KEY = process.env.EXCHANGE_API_KEY;
@@ -19,10 +17,9 @@ app.get('/api/rates/:base', async (req, res) => {
         const data = await response.json();
 
         if (data.result === "error") {
-            console.error("External API error:", data);
-            return res.status(500).json({ error: "External API failed", details: data });
+            console.error("External API error:", data["error-type"]);
+            return res.status(500).json({ error: data["error-type"] });
         }
-
         res.json(data);
 
     } catch (error) {
